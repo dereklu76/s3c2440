@@ -6,7 +6,7 @@
 
 @Exception Vector Table
 _start:
-	ldr	pc,	_reset
+	b	reset
 	ldr	pc,	_undefined_instructions
 	ldr	pc,	_software_interrupt
 	ldr	pc,	_prefetch_abort
@@ -29,36 +29,35 @@ _irq:
 	.word	irq
 _fiq:
 	.word	fiq
-_reset:
-	.word	reset
 
 undefined_instructions:
-	b	.
+	b .
 
 software_interrupt:
-	b	.
+	b .
 
 prefetch_abort:
-	b	.
+	b .
 
 data_abort:
-	b	.
+	b .
 
 unused:
-	b	.
+	b .
 
 irq:
-	b	.
+	b .
 
 fiq:
-	b	.
+	b .
 
 reset:
-	bl	set_svc
-	bl	disable_watchdog
-	bl	disable_interrupt
-	bl	disable_mmu
-	b	.
+	bl set_svc
+	bl disable_watchdog
+	bl disable_interrupt
+	bl disable_mmu
+	bl light_led
+	b .
 
 set_svc:
 	mrs	r0,	cpsr
@@ -91,6 +90,35 @@ disable_mmu:
 	ldr r1, =CONTROL_VAL
 	and r0, r0, r1
 	mcr p15, 0, r0, c1, c0, 0
-	mov	pc,	lr
+	mov pc, lr
 
+#define LED1_GPB5 5
+#define LED2_GPB6 6
+#define LED3_GPB7 7
+#define LED4_GPB8 8
 
+#define LED1_CLEAR_MASK (~(1<<LED1_GPB5))
+#define LED2_CLEAR_MASK (~(1<<LED2_GPB6))
+#define LED3_CLEAR_MASK (~(1<<LED3_GPB7))
+#define LED4_CLEAR_MASK (~(1<<LED4_GPB8))
+
+#define LED1_SET_MASK (1<<LED1_GPB5)
+#define LED2_SET_MASK (1<<LED2_GPB6)
+#define LED3_SET_MASK (1<<LED3_GPB7)
+#define LED4_SET_MASK (1<<LED4_GPB8)
+
+#define pGPBCON 0x56000010
+#define pGPBDAT 0x56000014
+
+#define GPBCON_VAL ((1<<16)|(1<<14)|(1<<12)|(1<<10))
+light_led:
+	@设置led端口为输出
+	ldr r0, =pGPBCON
+	ldr r1, =GPBCON_VAL
+	str r1, [r0]
+
+	@点亮led
+	ldr r0, =pGPBDAT
+	ldr r1, =(LED1_CLEAR_MASK&LED3_CLEAR_MASK)
+	str r1, [r0]
+	mov pc, lr
