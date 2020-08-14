@@ -56,8 +56,8 @@ reset:
 	bl disable_watchdog
 	bl disable_interrupt
 	bl disable_mmu
-	bl light_led
-	b .
+	bl init_pll
+	b light_led
 
 set_svc:
 	mrs	r0,	cpsr
@@ -92,6 +92,35 @@ disable_mmu:
 	mcr p15, 0, r0, c1, c0, 0
 	mov pc, lr
 
+#define pCLKDIVN 0x4c000014
+#define CLKDIVN_VAL ((2<<1)|(1<<0))
+#define iA_OR_nF ((1<<31)|(1<<30))
+#define pMPLLCON 0x4c000004
+#define MPLLCON_VAL ((127<<12)|(2<<4)|(1<<0))
+init_pll:
+	@configure the dividing ratio
+	@fclk:hclk:pclk
+	@1:4:8
+	ldr r0, =pCLKDIVN
+	ldr r1, =CLKDIVN_VAL
+	str r1, [r0]
+
+	@set cpu bus mode to asynchronous mode
+	mrc p15, 0, r0, c1, c0, 0
+	ldr r1, =iA_OR_nF
+	orr r0, r0, r1
+	mcr p15, 0, r0, c1, c0, 0
+	
+	@set pll
+	ldr r0, =pMPLLCON
+	ldr r1, =MPLLCON_VAL
+	str r1, [r0]
+	
+	@return from init_pll
+	mov pc, lr
+
+	
+
 #define LED1_GPB5 5
 #define LED2_GPB6 6
 #define LED3_GPB7 7
@@ -111,14 +140,38 @@ disable_mmu:
 #define pGPBDAT 0x56000014
 
 #define GPBCON_VAL ((1<<16)|(1<<14)|(1<<12)|(1<<10))
+#define DELAY_CNT 0xffff
 light_led:
-	@设置led端口为输出
+	@set the led port to be output
 	ldr r0, =pGPBCON
 	ldr r1, =GPBCON_VAL
 	str r1, [r0]
-
-	@点亮led
+led_loop:
+	@turn on the led
 	ldr r0, =pGPBDAT
 	ldr r1, =(LED1_CLEAR_MASK&LED3_CLEAR_MASK)
 	str r1, [r0]
+
+	@delay
+	ldr r0, =DELAY_CNT
+	bl led_delay
+
+	@turn off the led
+	ldr r0, =pGPBDAT
+	ldr r1, =(LED1_SET_MASK|LED3_SET_MASK)
+	str r1, [r0]
+	
+	@delay
+	ldr r0, =DELAY_CNT
+	bl led_delay
+
+	@loop
+	b led_loop
+
+led_delay:
+	cmp r0, #0
+	beq delay_end
+	sub r0, r0, #1
+	b led_delay
+delay_end:
 	mov pc, lr
