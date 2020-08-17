@@ -57,7 +57,90 @@ reset:
 	bl disable_interrupt
 	bl disable_mmu
 	bl init_pll
-	b light_led
+	bl init_sdram
+	bl copy_to_sdram
+	bl init_stack
+	bl clear_bss
+	ldr pc, =gboot_main
+@	b light_led
+
+#define STACK_HEAD 0x34000000
+init_stack:
+	ldr sp, =STACK_HEAD
+	mov pc, lr
+
+clear_bss:
+	ldr r0, =0x00000000
+	ldr r1, =_bss_start
+	ldr r2, =_bss_end
+clear_loop:
+	cmp r1, r2
+	beq clear_end
+	str r0, [r1]
+	add r1, r1, #4
+	b clear_loop
+clear_end:
+	mov pc, lr
+
+
+copy_to_sdram:
+	ldr r0, =0x30008000 @dst
+	ldr r1, =0x00000000 @src
+	ldr r2, =_bss_end @dst end
+copy_loop:
+	cmp r0, r2
+	beq copy_end
+	ldr r3, [r1]
+	str r3, [r0]
+	add r0, r0, #4
+	add r1, r1, #4
+	b copy_loop
+copy_end:
+	mov pc, lr
+
+
+#define pBWSCON 0x48000000
+#define BWSCON_VAL ((2<<28)|(2<<24))
+#define pBANKCON6 0x4800001c
+#define pBANKCON7 0x48000020
+#define BANKCON_VAL ((3<<15)|(1<<0))
+#define pREFRESH 0x48000024
+#define REFRESH_VAL (1<<23)
+#define pBANKSIZE 0x48000028
+#define BANKSIZE_VAL ((1<<7)|(1<<5)|(1<<4)|(1<<0))
+#define pMRSRB6 0x4800002c
+#define pMRSRB7 0x48000030
+#define MRSRB_VAL (2<<4)
+init_sdram:
+	ldr r0, =pBWSCON
+	ldr r1, =BWSCON_VAL
+	str r1, [r0]
+
+	ldr r0, =pBANKCON6
+	ldr r1, =BANKCON_VAL
+	str r1, [r0]
+
+	ldr r0, =pBANKCON7
+	ldr r1, =BANKCON_VAL
+	str r1, [r0]
+
+	ldr r0, =pREFRESH
+	ldr r1, =REFRESH_VAL
+	str r1, [r0]
+
+	ldr r0, =pBANKSIZE
+	ldr r1, =BANKSIZE_VAL
+	str r1, [r0]
+
+	ldr r0, =pMRSRB6
+	ldr r1, =MRSRB_VAL
+	str r1, [r0]
+
+	ldr r0, =pMRSRB7
+	ldr r1, =MRSRB_VAL
+	str r1, [r0]
+
+	mov pc, lr
 
 set_svc:
 	mrs	r0,	cpsr
