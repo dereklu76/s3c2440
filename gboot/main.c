@@ -33,12 +33,11 @@ void gboot_delay(void)
 void gboot_main(void)
 {
 	*pGPBCON = GPBCON_VAL;
-	
 	while(1)
 	{
-		*pGPBDAT = (LED1_CLEAR_MASK&LED3_CLEAR_MASK);
+		*pGPBDAT &= (LED1_CLEAR_MASK&LED2_CLEAR_MASK&LED3_CLEAR_MASK&LED4_CLEAR_MASK);
 		gboot_delay();
-		*pGPBDAT = (LED1_SET_MASK|LED3_SET_MASK);
+		*pGPBDAT |= (LED1_SET_MASK|LED2_SET_MASK|LED3_SET_MASK|LED4_SET_MASK);
 		gboot_delay();
 	}
 }
