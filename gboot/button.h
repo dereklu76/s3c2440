@@ -1,0 +1,34 @@
+#ifndef __BUTTON_H__
+#define __BUTTON_H__
+
+#define pGPGCON ((volatile unsigned long *)0x56000060)
+
+#define GPGCON_GPG0 0
+#define GPGCON_GPG3 6
+#define GPGCON_GPG5 10
+#define GPGCON_GPG6 12
+#define GPGCON_GPG7 14
+#define GPGCON_GPG11 22
+
+#define GPGCON_EINT8 GPGCON_GPG0
+#define GPGCON_EINT11 GPGCON_GPG3
+#define GPGCON_EINT13 GPGCON_GPG5
+#define GPGCON_EINT14 GPGCON_GPG6
+#define GPGCON_EINT15 GPGCON_GPG7
+#define GPGCON_EINT19 GPGCON_GPG11
+
+#define KEY1 GPGCON_EINT8
+#define KEY2 GPGCON_EINT11
+#define KEY3 GPGCON_EINT13
+#define KEY4 GPGCON_EINT14
+#define KEY5 GPGCON_EINT15
+#define KEY6 GPGCON_EINT19
+
+#define GPGCON_KEY_MSK (~((3<<KEY1)|(3<<KEY2)|(3<<KEY3)|(3<<KEY4)|(3<<KEY5)|(3<<KEY6)))
+#define GPGCON_KEY_SET ((2<<KEY1)|(2<<KEY2)|(2<<KEY3)|(2<<KEY4)|(2<<KEY5)|(2<<KEY6))
+
+void button_init(void);
+
+#endif
+
+

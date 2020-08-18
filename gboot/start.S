@@ -46,7 +46,10 @@ unused:
 	b .
 
 irq:
-	b .
+	sub lr, lr, #4
+	push {r0-r12, lr}
+	bl irq_handler
+	pop {r0-r12, pc}
 
 fiq:
 	b .
@@ -64,9 +67,26 @@ reset:
 	ldr pc, =gboot_main
 @	b light_led
 
-#define STACK_HEAD 0x34000000
+#define STACK_HEAD_IRQ 0x33000000
+#define STACK_HEAD_SVC 0x34000000
 init_stack:
-	ldr sp, =STACK_HEAD
+	@Enter irq mode
+	mrs r0, cpsr
+	bic r0, r0, #0x1f
+	and r0, r0, #0x12
+	msr cpsr, r0
+
+	@Set r13_irq
+	ldr sp, =STACK_HEAD_IRQ
+
+	@Enter svc mode
+	mrs r0, cpsr
+	bic r0, r0, #0x1f
+	and r0, r0, #0x13
+	msr cpsr, r0
+
+	@Set r13_svc
+	ldr sp, =STACK_HEAD_SVC
 	mov pc, lr
 
 clear_bss:
