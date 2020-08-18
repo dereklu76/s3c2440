@@ -47,9 +47,9 @@ unused:
 
 irq:
 	sub lr, lr, #4
-	push {r0-r12, lr}
+	stmfd sp!, {r0-r12, lr}
 	bl irq_handler
-	pop {r0-r12, pc}
+	ldmfd sp!, {r0-r12, pc}^
 
 fiq:
 	b .
@@ -73,7 +73,7 @@ init_stack:
 	@Enter irq mode
 	mrs r0, cpsr
 	bic r0, r0, #0x1f
-	and r0, r0, #0x12
+	orr r0, r0, #0x12
 	msr cpsr, r0
 
 	@Set r13_irq
@@ -82,7 +82,7 @@ init_stack:
 	@Enter svc mode
 	mrs r0, cpsr
 	bic r0, r0, #0x1f
-	and r0, r0, #0x13
+	orr r0, r0, #0x13
 	msr cpsr, r0
 
 	@Set r13_svc
