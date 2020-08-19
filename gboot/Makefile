@@ -1,7 +1,7 @@
 
-CC=arm-none-eabi-gcc
-LD=arm-none-eabi-ld
-CP=arm-none-eabi-objcopy
+CC=../tool/arm-none-eabi-gcc/bin/arm-none-eabi-gcc
+LD=../tool/arm-none-eabi-gcc/bin/arm-none-eabi-ld
+CP=../tool/arm-none-eabi-gcc/bin/arm-none-eabi-objcopy
 LDSCRIPT=gboot.lds
 CPPFLAGS=-MMD
 
