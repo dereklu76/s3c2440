@@ -13,7 +13,7 @@ all : gboot.bin gboot.elf
 gboot.bin : gboot.elf
 	$(CP) -O binary $< $@
 
-gboot.elf : start.o main.o led.o button.o interrupt.o
+gboot.elf : start.o main.o led.o button.o interrupt.o nandflash.o
 	$(LD) -T$(LDSCRIPT) $^ -o $@
 
 %.o : %.S
