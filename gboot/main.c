@@ -2,6 +2,8 @@
 #include "button.h"
 #include "interrupt.h"
 #include "nandflash.h"
+#include "uart.h"
+#include "printf.h"
 
 #define DELAY_CNT 0xffff
 
@@ -40,6 +42,8 @@ void gboot_main(void)
 
 	NF_Init();
 
+	Uart0_Init();
+
 	ret = NF_BlockErase(0);
 	if(ret)
 	{
@@ -63,13 +67,10 @@ void gboot_main(void)
 		buf[i] = ret++;
 	}
 	NF_PageRead(0, buf);
-	ret = 0;
+
 	for(i = 0; i < 2048; i++)
 	{
-		if(buf[i] != ret++)
-		{
-			error_num(3);
-		}
+		printf("buf[%d]=%x\r\n", i, buf[i]);
 	}
 
 	while(1)
