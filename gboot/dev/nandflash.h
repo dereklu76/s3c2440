@@ -3,9 +3,9 @@
 
 #define NFCONF (*((volatile unsigned short*)0x4e000000))
 #define NFCONT (*((volatile unsigned short*)0x4e000004))
-#define NFCMMD (*((volatile unsigned short*)0x4e000008))
-#define NFADDR (*((volatile unsigned short*)0x4e00000c))
-#define NFDATA (*((volatile unsigned long*)0x4e000010))
+#define NFCMMD (*((volatile unsigned char*)0x4e000008))
+#define NFADDR (*((volatile unsigned char*)0x4e00000c))
+#define NFDATA (*((volatile unsigned char*)0x4e000010))
 #define NFSTAT (*((volatile unsigned char*)0x4e000020))
 
 #define NFCONF_TACLS_POS 12

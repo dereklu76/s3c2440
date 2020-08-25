@@ -5,28 +5,6 @@
 #include "uart.h"
 #include "printf.h"
 
-#define DELAY_CNT 0xffff
-
-void gboot_delay(void)
-{
-	int i;
-
-	for(i = 0; i < DELAY_CNT; i++)
-	{
-	
-	}
-}
-
-void error_num(unsigned char num)
-{
-	while(1)
-	{
-		led_num(num);
-		gboot_delay();
-		led_num(0);
-		gboot_delay();
-	}
-}
 
 void gboot_main(void)
 {
@@ -47,7 +25,7 @@ void gboot_main(void)
 	ret = NF_BlockErase(0);
 	if(ret)
 	{
-		error_num(1);
+		printf("NF_BlockErase Error!\r\n");
 	}
 
 	ret = 0;
@@ -58,15 +36,18 @@ void gboot_main(void)
 	ret = NF_PageWrite(0, buf);
 	if(ret)
 	{
-		error_num(2);
+		printf("NF_PageWrite Error!\r\n");
 	}
 
-	ret = 1;
 	for(i = 0; i < 2048; i++)
 	{
-		buf[i] = ret++;
+		buf[i] = 0;
 	}
 	NF_PageRead(0, buf);
+
+	printf("NFCONF=%x\r\n", NFCONF);
+	printf("NFCONT=%x\r\n", NFCONT);
+	printf("NFSTAT=%x\r\n", NFSTAT);
 
 	for(i = 0; i < 2048; i++)
 	{
@@ -75,10 +56,6 @@ void gboot_main(void)
 
 	while(1)
 	{
-//		led_on();
-//		gboot_delay();
-//		led_off();
-//		gboot_delay();
 	}
 }
 

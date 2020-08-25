@@ -60,7 +60,7 @@ unsigned char NF_BlockErase(unsigned long addr)
 	NFCMMD = 0xd0;
 	NF_WaitForRnB();
 	NFCMMD = 0x70;
-	ret = NFDATA;
+	ret = (NFDATA & 0x01);
 	NF_DeSelectChip();
 
 	return ret;
@@ -108,7 +108,7 @@ unsigned char NF_PageWrite(unsigned long addr, unsigned char* buf)
 	NFCMMD = 0x10;
 	NF_WaitForRnB();
 	NFCMMD = 0x70;
-	ret = NFDATA;
+	ret = (NFDATA & 0x01);
 	NF_DeSelectChip();
 
 	return ret;
