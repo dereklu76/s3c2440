@@ -24,10 +24,7 @@
 #define LCDCON1_ENVID_POS 0
 
 
-/*To do...*/
-/*LCDCON1_CLKVAL_VAL need to be set*/
-#define LCDCON1_CLKVAL_VAL 0
-/*To do...*/
+#define LCDCON1_CLKVAL_VAL 7     /*video frame frequency 66Hz*/
 #define LCDCON1_PNRMODE_VAL 3
 #define LCDCON1_BPPMODE_VAL 12
 #define LCDCON1_ENVID_VAL 0
