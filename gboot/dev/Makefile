@@ -1,4 +1,4 @@
-OBJS := button.o interrupt.o led.o nandflash.o uart.o
+OBJS := button.o interrupt.o led.o nandflash.o uart.o lcd.o
 
 dev.o : $(OBJS)
 	$(LD) -r $^ -o dev.o
