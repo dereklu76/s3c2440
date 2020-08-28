@@ -16,7 +16,7 @@ void TS_Init(void)
 	INTMSK &= (~(1<<31));
 	INTSUBMSK &= (~(1<<9));
 
-	/*Enter Waiting for interrupt mode*/
+	/*Enter Waiting for interrupt mode(DOWN)*/
 	ADCTSC = 0xd3;
 }
 
@@ -45,7 +45,7 @@ void TS_ADC_TC_Irq(void)
 		SUBSRCPND |= (1<<9);
 		INTPND |= (1<<31);
 
-		/*Enter Waiting for interrupt mode*/
+		/*Enter Waiting for interrupt mode(UP)*/
 		ADCTSC = 0xd3;
 		ADCTSC |= (1<<8);
 	}
@@ -55,6 +55,9 @@ void TS_ADC_TC_Irq(void)
 		ADCUPDN |= (1<<1);
 		SUBSRCPND |= (1<<9);
 		INTPND |= (1<<31);
+
+		/*Enter Waiting for interrupt mode(DOWN)*/
+		ADCTSC = 0xd3;
 	}
 }
 
