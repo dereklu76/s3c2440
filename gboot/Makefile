@@ -1,13 +1,13 @@
 OBJS := start.o main.o lib/lib.o dev/dev.o
-CC := $(shell pwd)/../tool/arm-none-eabi-gcc/bin/arm-none-eabi-gcc
-LD := $(shell pwd)/../tool/arm-none-eabi-gcc/bin/arm-none-eabi-ld
-CP := $(shell pwd)/../tool/arm-none-eabi-gcc/bin/arm-none-eabi-objcopy
+CC := arm-linux-gnueabi-gcc
+LD := arm-linux-gnueabi-ld
+CP := arm-linux-gnueabi-objcopy
 LDSCRIPT := gboot.lds
 CPPFLAGS := -MMD
 CPPFLAGS += -I$(shell pwd)/include 
 CPPFLAGS += -I$(shell pwd)/lib
 CPPFLAGS += -I$(shell pwd)/dev
-CFLAGS:=$(CPPFLAGS) -fno-builtin 
+CFLAGS:=$(CPPFLAGS) -fno-builtin -fno-stack-protector
 
 export CC
 export LD
