@@ -5,6 +5,7 @@
 #include "uart.h"
 #include "printf.h"
 #include "lcd.h"
+#include "touchscreen.h"
 
 void gboot_main(void)
 {
@@ -24,9 +25,11 @@ void gboot_main(void)
 
 	Lcd_Init();
 
+	TS_Init();
+
 	while(1)
 	{
-		Lcd_Test();
+//		Lcd_Test();
 	}
 }
 

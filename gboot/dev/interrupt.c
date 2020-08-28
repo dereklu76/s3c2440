@@ -1,5 +1,6 @@
 #include "interrupt.h"
 #include "led.h"
+#include "touchscreen.h"
 
 void irq_handler(void)
 {
@@ -43,6 +44,9 @@ void irq_handler(void)
 			}
 			*pSRCPND |= (1 << 5);
 			*pINTPND |= (1 << 5);
+			break;
+		case 31: /*ADC*/
+			TS_ADC_TC_Irq();
 			break;
 	}
 }

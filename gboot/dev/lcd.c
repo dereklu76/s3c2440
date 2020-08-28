@@ -27,7 +27,7 @@ void Lcd_Init(void)
 	LCDSADDR1 = (((unsigned long)lcd_buf)>>1);
 
 	/*end address of lcd buffer*/
-	LCDSADDR2 = (LCDSADDR1&0x1fffff)+320*240;
+	LCDSADDR2 = (((((unsigned long)lcd_buf)+320*240*2)>>1)&0x1fffff);
 
 	LCDSADDR3 = ((0<<11)|(320<<0));
 
