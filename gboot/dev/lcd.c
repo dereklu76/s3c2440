@@ -1,9 +1,21 @@
 #include "lcd.h"
 
+   
 unsigned short lcd_buf[240][320] = {0};
 
 void Lcd_Init(void)
 {
+	int i, j;
+	for(i = 0; i < 240; i++)
+	{
+		lcd_buf[i][0] = ((0x00<<11)|(0x00<<5)|(0x1f<<0)); /*left--->blue*/
+		lcd_buf[i][319] = ((0x00<<11)|(0x3f<<5)|(0x00<<0)); /*right--->green*/
+	}
+	for(i = 0; i < 320; i++)
+	{
+		lcd_buf[0][i] = ((0x1f<<11)|(0x00<<5)|(0x00<<0)); /*top--->red*/
+		lcd_buf[239][i] = ((0x00<<11)|(0x3f<<5)|(0x1f<<0)); /*bottom--->green+blue*/
+	}
 	/*Initialize the IO Pin to be lcd.*/
 	GPCCON = 0xaaaaaaaa;
 	GPDCON = 0xaaaaaaaa;
