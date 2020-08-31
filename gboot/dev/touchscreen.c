@@ -8,9 +8,10 @@ void TS_Init(void)
 
 	/*Initialize ADC_TC Interrupt*/
 	/*Clear source pend*/
-	ADCUPDN |= (3<<0);
-	SUBSRCPND |= (1<<9);
-	INTPND |= (1<<31);
+	ADCUPDN = 0;
+	SUBSRCPND = (1<<9);
+	SRCPND = (1<<31);
+	INTPND = (1<<31);
 
 	/*Clear mask*/
 	INTMSK &= (~(1<<31));
@@ -27,6 +28,14 @@ void TS_ADC_TC_Irq(void)
 
 	if(ADCUPDN & (1<<0))/*DOWN*/
 	{
+		printf("Stylus Down.\r\n");
+
+		/*Clear Pending*/
+		ADCUPDN = 0;
+		SUBSRCPND = (1<<9);
+		SRCPND = (1<<31);
+		INTPND = (1<<31);
+
 		/*Auto X,Y measurement*/
 		ADCTSC = (1<<2);
 		ADCCON |= (1<<0);
@@ -40,21 +49,19 @@ void TS_ADC_TC_Irq(void)
 		
 		printf("(%d, %d)\r\n", xdata, ydata);
 
-		/*Clear Pending*/
-		ADCUPDN |= (1<<0);
-		SUBSRCPND |= (1<<9);
-		INTPND |= (1<<31);
-
 		/*Enter Waiting for interrupt mode(UP)*/
 		ADCTSC = 0xd3;
 		ADCTSC |= (1<<8);
 	}
 	else if(ADCUPDN & (1<<1))/*UP*/
 	{
+		printf("Stylus Up.\r\n");
+
 		/*Clear Pending*/
-		ADCUPDN |= (1<<1);
-		SUBSRCPND |= (1<<9);
-		INTPND |= (1<<31);
+		ADCUPDN = 0;
+		SUBSRCPND = (1<<9);
+		SRCPND = (1<<31);
+		INTPND = (1<<31);
 
 		/*Enter Waiting for interrupt mode(DOWN)*/
 		ADCTSC = 0xd3;
