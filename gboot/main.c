@@ -6,6 +6,7 @@
 #include "printf.h"
 #include "lcd.h"
 #include "touchscreen.h"
+#include "arp.h"
 
 void gboot_main(void)
 {
@@ -27,9 +28,11 @@ void gboot_main(void)
 
 	TS_Init();
 
+	dm9000_init();
+
 	while(1)
 	{
-//		Lcd_Test();
+		Arp_Request();		
 	}
 }
 

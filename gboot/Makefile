@@ -1,4 +1,4 @@
-OBJS := start.o main.o lib/lib.o dev/dev.o
+OBJS := start.o main.o lib/lib.o dev/dev.o net/net.o
 CC := arm-linux-gnueabi-gcc
 LD := arm-linux-gnueabi-ld
 CP := arm-linux-gnueabi-objcopy
@@ -7,13 +7,14 @@ CPPFLAGS := -MMD
 CPPFLAGS += -I$(shell pwd)/include 
 CPPFLAGS += -I$(shell pwd)/lib
 CPPFLAGS += -I$(shell pwd)/dev
+CPPFLAGS += -I$(shell pwd)/net
 CFLAGS:=$(CPPFLAGS) -fno-builtin -fno-stack-protector
 
 export CC
 export LD
 export CFLAGS
 
-.PHONY : clean lib/lib.o dev/dev.o
+.PHONY : clean lib/lib.o dev/dev.o net/net.o
 
 gboot.bin : gboot.elf
 	$(CP) -O binary $< $@
@@ -27,6 +28,9 @@ lib/lib.o :
 dev/dev.o :
 	make -C dev/
 
+net/net.o :
+	make -C net/
+
 %.o : %.S
 	$(CC) -c -g $<
 
@@ -37,5 +41,6 @@ dev/dev.o :
 
 clean:
 	-rm -rf *.o *.bin *.elf *.d
-	make -C dev clean
-	make -C lib clean
+	make -C dev/ clean
+	make -C lib/ clean
+	make -C net/ clean

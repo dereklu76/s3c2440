@@ -1,8 +1,9 @@
 #include "dm9000.h"
+#include "arp.h"
 #include "printf.h"
 
 unsigned char buffer[1000];
-unsigned char mac_addr[6] = {6, 6, 6, 8, 8, 8};
+const unsigned char board_mac_addr[6] = {6, 6, 6, 8, 8, 8};
 
 void cs_init(void)
 {
@@ -98,7 +99,7 @@ void dm9000_fill_mac(void)
 
 	for(i = 0; i < 6; i++)
 	{
-		dm9000_reg_write(DM9000_PAR+i, mac_addr[i]);
+		dm9000_reg_write(DM9000_PAR+i, board_mac_addr[i]);
 	}
 }
 
@@ -210,7 +211,21 @@ unsigned short dm9000_rx(unsigned char *dat)
 void dm9000_irq_handler(void)
 {
 	unsigned short len;
+	ETH_HDR *eth_h;
+
 	len = dm9000_rx(buffer);
+	
+	eth_h = (ETH_HDR*)buffer;
+
+	switch(U16SWAP(eth_h->frame_type))
+	{
+		case 0x0806: /*ARP*/
+			Arp_Process(buffer);
+			break;
+
+		default:
+			break;
+	}
 
 	SRCPND = (1<<4);
 	INTPND = (1<<4);

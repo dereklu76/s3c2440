@@ -1,11 +1,22 @@
 #include "interrupt.h"
 #include "led.h"
 #include "touchscreen.h"
+#include "dm9000.h"
 
 void irq_handler(void)
 {
 	switch(*pINTOFFSET)
 	{
+		case 4: /*EINT4_7*/
+			if(*pEINTPEND & (1 << 7)) /*EINT7---LAN*/
+			{
+				*pEINTPEND = (1 << 7);
+
+				dm9000_irq_handler();
+			}
+
+			break;
+
 		case 5:	/*EINT8_23*/
 			if(*pEINTPEND & (1 << 8)) /*EINT8---KEY1*/
 			{
@@ -45,6 +56,7 @@ void irq_handler(void)
 			*pSRCPND |= (1 << 5);
 			*pINTPND |= (1 << 5);
 			break;
+
 		case 31: /*ADC*/
 			TS_ADC_TC_Irq();
 			break;

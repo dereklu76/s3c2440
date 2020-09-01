@@ -86,6 +86,13 @@
 #define TCR_TXREQ (1<<0)
 
 
+extern const unsigned char board_mac_addr[6];
+
+
+void dm9000_init(void);
+void dm9000_tx(unsigned char *dat, unsigned short length);
+unsigned short dm9000_rx(unsigned char *dat);
+void dm9000_irq_handler(void);
 
 
 #endif
