@@ -6,8 +6,8 @@
 #define DM9000_ID 0x90000a46
 
 
-#define DM_ADD (*((volatile unsigned short*)0x20000300))
-#define DM_DAT (*((volatile unsigned short*)0x20000304))
+#define DM_ADD (*((volatile unsigned short*)0x20000000))
+#define DM_DAT (*((volatile unsigned short*)0x20000004))
 
 
 #define BWSCON (*((volatile unsigned long*)0x48000000))

@@ -2,6 +2,7 @@
 #include "led.h"
 #include "touchscreen.h"
 #include "dm9000.h"
+#include "arp.h"
 
 void irq_handler(void)
 {
@@ -14,12 +15,15 @@ void irq_handler(void)
 
 				dm9000_irq_handler();
 			}
+			*pSRCPND = (1 << 4);
+			*pINTPND = (1 << 4);
 
 			break;
 
 		case 5:	/*EINT8_23*/
 			if(*pEINTPEND & (1 << 8)) /*EINT8---KEY1*/
 			{
+				Arp_Request();
 				led_num(1);
 				*pEINTPEND |= (1 << 8);
 			}

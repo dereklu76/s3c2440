@@ -227,9 +227,6 @@ void dm9000_irq_handler(void)
 			break;
 	}
 
-	SRCPND = (1<<4);
-	INTPND = (1<<4);
-	EINTPEND = (1<<7);
 }
 
 

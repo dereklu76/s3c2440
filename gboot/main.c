@@ -6,7 +6,7 @@
 #include "printf.h"
 #include "lcd.h"
 #include "touchscreen.h"
-#include "arp.h"
+#include "dm9000.h"
 
 void gboot_main(void)
 {
@@ -32,7 +32,7 @@ void gboot_main(void)
 
 	while(1)
 	{
-		Arp_Request();		
+//		Arp_Request();		
 	}
 }
 

@@ -3,9 +3,9 @@
 #include "printf.h"
 #include <string.h>
 
-const u8 BROADCAST_MAC[6] = {0xff};
+const u8 BROADCAST_MAC[6] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 const u8 board_ip_addr[4] = {192, 168, 1, 23};
-const u8 pc_ip_addr[4] = {192, 168, 1, 60};
+const u8 pc_ip_addr[4] = {192, 168, 1, 100};
 
 void Arp_Request(void)
 {

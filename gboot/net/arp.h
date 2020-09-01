@@ -30,6 +30,7 @@ typedef struct arp_hdr
 
 
 void Arp_Process(u8 *rcv_buf);
+void Arp_Request(void);
 
 #endif
 
